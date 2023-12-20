@@ -10,9 +10,9 @@ if (!function_exists('json')) {
      * @param integer $status
      * @return Response
      */
-    function json(Response $response, array $data = [], int $status = 201): Response
+    function json(Response $response, array $data = [], int $status = 200): Response
     {
-        $response->getBody()->write(json_encode(arr_upr($data), JSON_PRETTY_PRINT));
+        $response->getBody()->write(json_encode(arr_upr(['data' => $data]), JSON_PRETTY_PRINT));
         return $response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($status);

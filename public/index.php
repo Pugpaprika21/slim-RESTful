@@ -36,11 +36,8 @@ $repositories($containerBuilder);
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
-// Set Container
-require __DIR__ . '../../app/container.php';
-
-// Set Helpers
-require __DIR__ . '../../container/functions/helpers.php';
+// Set Includes app_base
+require __DIR__ . '../../src/app_base/includes.php';
 
 // Instantiate the app
 AppFactory::setContainer($container);
