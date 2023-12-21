@@ -37,7 +37,7 @@ $repositories($containerBuilder);
 $container = $containerBuilder->build();
 
 // Set Includes app_base
-require __DIR__ . '../../src/app_base/includes.php';
+require __DIR__ . '../../src/Application/includes.php';
 
 // Instantiate the app
 AppFactory::setContainer($container);
