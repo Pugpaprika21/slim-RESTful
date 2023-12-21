@@ -1,6 +1,7 @@
 <?php
 
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\UploadedFileInterface;
 
 if (!function_exists('json')) {
 
@@ -20,7 +21,7 @@ if (!function_exists('json')) {
 }
 
 if (!function_exists('arr_upr')) {
-    
+
     /**
      * @param array|object $input
      * @param int $case
@@ -49,7 +50,7 @@ if (!function_exists('arr_upr')) {
 }
 
 if (!function_exists('file_uploaded')) {
-    
+
     /**
      * @param string $directory
      * @param UploadedFileInterface $uploadedFile
@@ -64,5 +65,23 @@ if (!function_exists('file_uploaded')) {
         $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
 
         return $filename;
+    }
+}
+
+if (!function_exists('esc')) {
+
+    /**
+     * @param string $data
+     * @return string
+     */
+    function esc(string $data): string
+    {
+        if (!is_string($data)) {
+            $data = (string)$data;
+        }
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return $data;
     }
 }
