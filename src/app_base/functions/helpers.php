@@ -47,3 +47,22 @@ if (!function_exists('arr_upr')) {
         return $newArray;
     }
 }
+
+if (!function_exists('file_uploaded')) {
+    
+    /**
+     * @param string $directory
+     * @param UploadedFileInterface $uploadedFile
+     * @return string
+     */
+    function file_uploaded(string $directory, UploadedFileInterface $uploadedFile): string
+    {
+        $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        $basename = bin2hex(random_bytes(8));
+        $filename = sprintf('%s.%0.8s', $basename, $extension);
+
+        $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+        return $filename;
+    }
+}
