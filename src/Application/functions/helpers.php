@@ -1,7 +1,7 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\ResponseInterface as Response;
 
 if (!function_exists('json')) {
 
@@ -49,9 +49,11 @@ if (!function_exists('arr_upr')) {
     }
 }
 
+
 if (!function_exists('file_uploaded')) {
 
     /**
+     * 
      * @param string $directory
      * @param UploadedFileInterface $uploadedFile
      * @return string
@@ -65,6 +67,67 @@ if (!function_exists('file_uploaded')) {
         $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
 
         return $filename;
+    }
+}
+
+if (!function_exists('file_download')) {
+
+    /**
+     * <code>
+     *  $directory = $this->container->get('load_directory');
+     *  $imageName = $args['filename'] ?? '';
+     *
+     *  return file_download($response, $directory . scan_filename($directory, $imageName));
+     * </code>
+     * 
+     * @param Response $response
+     * @param string $path
+     * @param boolean $download
+     * @return Response
+     */
+    function file_download(Response $response, string $path, bool $download = false): Response
+    {
+        if (!file_exists($path)) {
+            return $response->withStatus(404, 'File Not Found');
+        }
+
+        $fileContent = file_get_contents($path);
+        $contentType = mime_content_type($path);
+        $filename = basename($path);
+
+        $response = $response->withHeader('Content-Type', $contentType);
+        if ($download) {
+            $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        }
+        $response->getBody()->write($fileContent);
+
+        return $response;
+    }
+}
+
+if (!function_exists('scan_filename')) {
+
+    /**
+     * @param string $directory
+     * @param string $inputFilename
+     * @return string
+     */
+    function scan_filename(string $directory, string $inputFilename): string
+    {
+        $name = "";
+        $files = scandir($directory, SCANDIR_SORT_DESCENDING);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                $fileInfo = pathinfo($file);
+                if (isset($fileInfo['filename'])) {
+                    if ($inputFilename == $fileInfo['filename']) {
+                        $name = $fileInfo['basename'];
+                        break;
+                    }
+                }
+            }
+        }
+        return $name;
     }
 }
 
