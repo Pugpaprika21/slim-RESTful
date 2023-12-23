@@ -1,6 +1,7 @@
 <?php
 
 use App\Application\Controller\User\UserController;
+use App\Application\Middleware\AuthMiddleware;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 $app->group('/user', function (Group $group) {
@@ -9,4 +10,4 @@ $app->group('/user', function (Group $group) {
     $group->get('/showOne/{id}', UserController::class . ':showOne');
     $group->put('/update/{id}', UserController::class . ':update');
     $group->delete('/delete/{id}', UserController::class . ':delete');
-});
+})->add(AuthMiddleware::class);

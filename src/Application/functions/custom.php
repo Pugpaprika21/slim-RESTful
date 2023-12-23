@@ -1,5 +1,68 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
+use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\HttpUnauthorizedException;
+
+/**
+ * @param Response $response
+ * @param mixed $dataSet
+ * @return Response
+ */
+function generate_token_jwt(Response $response, mixed $dataSet): Response
+{
+    global $env;
+
+    $key = $env['APP_API_KEY'];
+    $issued_at = time();
+    $payload = [
+        'iat' => $issued_at,
+        'exp' => ($issued_at + 60),
+        'sub' => $dataSet,
+    ];
+
+    $jwt = JWT::encode($payload, $key, 'HS256');
+    return json($response, ['jwt_token' =>  $jwt]);
+}
+
+/**
+ * @param Request $request
+ * @param Response $response
+ * @return Response
+ */
+function validate_token_jwt(Request $request, Response $response): Response
+{
+    global $env;
+
+    $key = $env['APP_API_KEY'];
+
+    $authHeader = $request->getHeader('Authorization');
+    if (empty($authHeader)) {
+        throw new HttpUnauthorizedException($request);   
+    }
+
+    $jwt = str_replace('Bearer ', '', $authHeader[0]);
+
+    try {
+        $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+        return json($response, ['data' => $decoded]);
+    } catch (ExpiredException $e) {
+        return json($response, ['msg' => 'Token expired..'], 401);
+    } catch (SignatureInvalidException $e) {
+        return json($response, ['msg' => 'Invalid token signature..'], 401);
+    } catch (BeforeValidException $e) {
+        return json($response, ['msg' => 'Token not valid yet..'], 401);
+    } catch (Exception $e) {
+        return json($response, ['msg' => 'Invalid token..'], 401);
+    }
+}
+
+
 function send_otp($new_pass_otp, $phone)
 {
     global $env;

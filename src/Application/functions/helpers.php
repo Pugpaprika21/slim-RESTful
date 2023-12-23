@@ -1,5 +1,6 @@
 <?php
 
+use Firebase\JWT\JWT;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -147,4 +148,11 @@ if (!function_exists('esc')) {
         $data = htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         return $data;
     }
+}
+
+function echo_r($param = null, $exist = true)
+{
+    $data = print_r($param, true);
+    echo sprintf("<pre><div id='debug-data' style='padding: 10px; color: #FFFFFF; background-color: #000000;'>%s</div></pre>", $data);
+    if ($exist) exit;
 }

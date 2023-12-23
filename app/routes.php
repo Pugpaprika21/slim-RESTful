@@ -10,4 +10,5 @@ return function (App $app) {
     $app->options('/{routes:.*}', fn (Request $request, Response $response): Response => $response);
 
     require __DIR__ . '../../routes/user.php';
+    require __DIR__ . '../../routes/auth.php';
 };
