@@ -68,6 +68,7 @@ class UserController
             $user->email = esc($body['email']);
             $user->address = esc($body['address']);
             $user->phone_number = esc($body['phone_number']);
+            $user->profile = '';
             $id = $db->store($user);
             $user = $db->findOne('users', 'id = ?', [$id]);
 
@@ -102,6 +103,7 @@ class UserController
             $user->email = esc($body['email']);
             $user->address = esc($body['address']);
             $user->phone_number = esc($body['phone_number']);
+            $user->profile = '';
             $id = $db->store($user);
             $user = $db->findOne('users', 'id = ?', [$id]);
             $db->close();

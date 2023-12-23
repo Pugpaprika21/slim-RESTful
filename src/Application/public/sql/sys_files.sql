@@ -1,0 +1,13 @@
+CREATE TABLE sys_files (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    filesize INT,
+    filetype VARCHAR(50),
+    content TEXT,
+    ref_id INT NOT NULL,
+    ref_table VARCHAR(255) NOT NULL,
+    ref_field VARCHAR(255) NOT NULL,
+    status_at CHAR(1) DEFAULT 'Y',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
