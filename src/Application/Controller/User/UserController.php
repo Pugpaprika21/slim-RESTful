@@ -27,7 +27,9 @@ class UserController
         $users = $db->exportAll($db->findAll('users', 'ORDER BY created_at DESC LIMIT ?, ?', [$limit, $offset]));
         $db->close();
 
-        return json($response, ['users' => $users, 'rows' => count($users)]);
+        $jwt_object = $request->getAttribute('jwt_object');
+
+        return json($response, ['users' => $users, 'rows' => count($users), 'jwt_object' => $jwt_object]);
     }
 
     public function showOne(Request $request, Response $response, array $agre): Response

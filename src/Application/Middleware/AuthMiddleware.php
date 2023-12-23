@@ -29,7 +29,6 @@ class AuthMiddleware implements Middleware
      */
     public function process(Request $request, RequestHandler $handler): Response
     {
-        $handler->handle($request);
         return $this->validateTokenJWT($request, $handler);
     }
 
@@ -37,19 +36,18 @@ class AuthMiddleware implements Middleware
     {
         $key = $this->container->get('jwt_secret_key');
 
-        $response = $handler->handle($request);
-
         $authHeader = $request->getHeader('Authorization');
-        if (empty($authHeader)) {
-            throw new HttpUnauthorizedException($request, 'Unauthorized');
-        }
-
-        $jwt = str_replace('Bearer ', '', $authHeader[0]);
-
+        if (empty($authHeader)) throw new HttpUnauthorizedException($request, 'Unauthorized');
+     
         try {
-            // $request = $request->withAttribute('session', $_SESSION);
-            JWT::decode($jwt, new Key($key, 'HS256'));
+            $jwt = str_replace('Bearer ', '', $authHeader[0]);
+
+            $jwtObject = JWT::decode($jwt, new Key($key, 'HS256'));
+            $request = $request->withAttribute('jwt_object', $jwtObject);
+
+            $response = $handler->handle($request);
             return $response;
+
         } catch (ExpiredException $e) {
             throw new HttpUnauthorizedException($request, 'Token expired..');
         } catch (SignatureInvalidException $e) {
