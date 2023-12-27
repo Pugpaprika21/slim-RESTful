@@ -7,7 +7,7 @@ CREATE TABLE users (
     email VARCHAR(255),
     address TEXT,
     phone_number VARCHAR(20),
-    profile VARCHAR(255),
+    profile CHAR(1),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
